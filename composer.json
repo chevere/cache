@@ -1,6 +1,6 @@
 {
-    "name": "chevere/%repoName%",
-    "description": "A chevere %repoName% component.",
+    "name": "chevere/cache",
+    "description": "A chevere cache component.",
     "homepage": "https://chevere.org",
     "type": "library",
     "license": "Apache-2.0",
@@ -19,16 +19,13 @@
         "symplify/easy-coding-standard": "^9.4"
     },
     "autoload": {
-        "files": [
-            "src/functions.php"
-        ],
         "psr-4": {
-            "Chevere\\%namespace%\\": "src/"
+            "Chevere\\Cache\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Chevere\\Tests\\%namespace%\\": "tests/"
+            "Chevere\\Tests\\": "tests/"
         }
     },
     "config": {
