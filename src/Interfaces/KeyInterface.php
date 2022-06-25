@@ -19,7 +19,7 @@ use Stringable;
 /**
  * Describes the component in charge of defining a cache key.
  */
-interface CacheKeyInterface extends Stringable
+interface KeyInterface extends Stringable
 {
     public const ILLEGAL_KEY_CHARACTERS = '\.\/\\\~\:';
 

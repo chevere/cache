@@ -13,22 +13,22 @@ declare(strict_types=1);
 
 namespace Chevere\Tests;
 
-use Chevere\Cache\CacheKey;
+use Chevere\Cache\Key;
 use Chevere\Throwable\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-final class CacheKeyTest extends TestCase
+final class KeyTest extends TestCase
 {
     public function testInvalidArgumentConstruct()
     {
         $this->expectException(InvalidArgumentException::class);
-        new CacheKey('././\\~:');
+        new Key('././\\~:');
     }
 
     public function testConstruct(): void
     {
-        $key = 'test';
-        $cacheKey = new CacheKey($key);
-        $this->assertSame($key, $cacheKey->__toString());
+        $string = 'test';
+        $key = new Key($string);
+        $this->assertSame($string, $key->__toString());
     }
 }

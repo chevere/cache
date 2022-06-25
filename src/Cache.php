@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace Chevere\Cache;
 
 use Chevere\Cache\Interfaces\CacheInterface;
-use Chevere\Cache\Interfaces\CacheItemInterface;
-use Chevere\Cache\Interfaces\CacheKeyInterface;
+use Chevere\Cache\Interfaces\ItemInterface;
+use Chevere\Cache\Interfaces\KeyInterface;
 use Chevere\Filesystem\Exceptions\DirUnableToCreateException;
 use Chevere\Filesystem\File;
 use Chevere\Filesystem\FilePhp;
 use Chevere\Filesystem\FilePhpReturn;
 use Chevere\Filesystem\Interfaces\DirInterface;
 use Chevere\Filesystem\Interfaces\PathInterface;
-use Chevere\Message\Message;
+use function Chevere\Message\message;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
 use Chevere\Throwable\Exceptions\RuntimeException;
 use Chevere\VarSupport\Interfaces\VarStorableInterface;
@@ -52,7 +52,7 @@ final class Cache implements CacheInterface
         return $this->dir;
     }
 
-    public function withPut(CacheKeyInterface $key, VarStorableInterface $var): CacheInterface
+    public function withPut(KeyInterface $key, VarStorableInterface $var): CacheInterface
     {
         $path = $this->getPath($key->__toString());
 
@@ -92,7 +92,7 @@ final class Cache implements CacheInterface
     /**
      * @infection-ignore-all
      */
-    public function without(CacheKeyInterface $cacheKey): CacheInterface
+    public function without(KeyInterface $cacheKey): CacheInterface
     {
         $new = clone $this;
         $path = $this->getPath($cacheKey->__toString());
@@ -119,22 +119,22 @@ final class Cache implements CacheInterface
         return $new;
     }
 
-    public function exists(CacheKeyInterface $cacheKey): bool
+    public function exists(KeyInterface $cacheKey): bool
     {
         return $this->getPath($cacheKey->__toString())->exists();
     }
 
-    public function get(CacheKeyInterface $cacheKey): CacheItemInterface
+    public function get(KeyInterface $cacheKey): ItemInterface
     {
         $path = $this->getPath($cacheKey->__toString());
         if (!$path->exists()) {
             throw new OutOfBoundsException(
-                (new Message('No cache for key %key%'))
-                    ->code('%key%', $cacheKey->__toString())
+                message('No cache for key %key%')
+                    ->withCode('%key%', $cacheKey->__toString())
             );
         }
 
-        return new CacheItem(
+        return new Item(
             new FilePhpReturn(
                 new FilePhp(
                     new File($path)

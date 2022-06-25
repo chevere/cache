@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Chevere\Cache;
 
-use Chevere\Cache\Interfaces\CacheItemInterface;
+use Chevere\Cache\Interfaces\ItemInterface;
 use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
 
-final class CacheItem implements CacheItemInterface
+final class Item implements ItemInterface
 {
     public function __construct(
         private FilePhpReturnInterface $phpFileReturn

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Chevere\Cache;
 
-use Chevere\Cache\Interfaces\CacheKeyInterface;
-use Chevere\Message\Message;
+use Chevere\Cache\Interfaces\KeyInterface;
+use function Chevere\Message\message;
 use Chevere\Throwable\Exceptions\InvalidArgumentException;
 
-final class CacheKey implements CacheKeyInterface
+final class Key implements KeyInterface
 {
     public function __construct(
         private string $key
@@ -32,13 +32,13 @@ final class CacheKey implements CacheKeyInterface
 
     private function assertKey(): void
     {
-        if (preg_match_all('#[' . CacheKeyInterface::ILLEGAL_KEY_CHARACTERS . ']#', $this->key, $matches)) {
+        if (preg_match_all('#[' . KeyInterface::ILLEGAL_KEY_CHARACTERS . ']#', $this->key, $matches)) {
             // @infection-ignore-all
             $forbidden = implode(' ', array_unique($matches[0]));
 
             throw new InvalidArgumentException(
-                (new Message('Use of forbidden characters %character%'))
-                    ->code('%character%', $forbidden)
+                message('Use of forbidden characters %character%')
+                    ->withCode('%character%', $forbidden)
             );
         }
     }

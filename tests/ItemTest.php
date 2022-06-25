@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Chevere\Tests;
 
-use Chevere\Cache\CacheItem;
-use Chevere\Cache\Interfaces\CacheItemInterface;
+use Chevere\Cache\Interfaces\ItemInterface;
+use Chevere\Cache\Item;
 use Chevere\Filesystem\Exceptions\FileNotExistsException;
 use Chevere\Filesystem\File;
 use Chevere\Filesystem\FilePhp;
@@ -27,7 +27,7 @@ use Chevere\VarSupport\VarStorable;
 use PHPUnit\Framework\TestCase;
 use function Safe\file_put_contents;
 
-final class CacheItemTest extends TestCase
+final class ItemTest extends TestCase
 {
     private DirInterface $dir;
 
@@ -45,41 +45,41 @@ final class CacheItemTest extends TestCase
     public function testVarThrowsException(): void
     {
         $file = $this->getDisposablePhpFileReturn();
-        $cacheItem = $this->getCacheItem($file->path());
+        $item = $this->getCacheItem($file->path());
         $file->remove();
         $this->expectException(FileNotExistsException::class);
-        $cacheItem->var();
+        $item->var();
     }
 
     public function testRawThrowsException(): void
     {
         $file = $this->getDisposablePhpFileReturn();
-        $cacheItem = $this->getCacheItem($file->path());
+        $item = $this->getCacheItem($file->path());
         $file->remove();
         $this->expectException(FileNotExistsException::class);
-        $cacheItem->raw();
+        $item->raw();
     }
 
     public function testNotSerialized(): void
     {
         $path = $this->dir->path()->getChild('return.php');
         $this->getDisposablePhpFileReturn();
-        $cacheItem = $this->getCacheItem($path);
+        $item = $this->getCacheItem($path);
         $var = include $path->__toString();
-        $this->assertSame($var, $cacheItem->raw());
-        $this->assertSame($var, $cacheItem->var());
+        $this->assertSame($var, $item->raw());
+        $this->assertSame($var, $item->var());
     }
 
     public function testSerialized(): void
     {
         $path = $this->dir->path()->getChild('return-serialized.php');
         $this->writeSerialized($path);
-        $cacheItem = $this->getCacheItem($path);
+        $item = $this->getCacheItem($path);
         $var = include $path->__toString();
-        $this->assertSame($var, $cacheItem->raw());
+        $this->assertSame($var, $item->raw());
         $this->assertEqualsCanonicalizing(
             unserialize($var),
-            $cacheItem->var()
+            $item->var()
         );
         unlink($path->__toString());
     }
@@ -94,9 +94,9 @@ final class CacheItemTest extends TestCase
         return $file;
     }
 
-    private function getCacheItem(PathInterface $path): CacheItemInterface
+    private function getCacheItem(PathInterface $path): ItemInterface
     {
-        return new CacheItem(
+        return new Item(
             new FilePhpReturn(
                 new FilePhp(
                     new File($path)

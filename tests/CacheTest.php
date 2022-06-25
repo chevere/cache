@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Chevere\Tests;
 
 use Chevere\Cache\Cache;
-use Chevere\Cache\CacheKey;
-use Chevere\Cache\Interfaces\CacheItemInterface;
+use Chevere\Cache\Interfaces\ItemInterface;
+use Chevere\Cache\Key;
 use Chevere\Filesystem\Interfaces\DirInterface;
 use Chevere\Tests\src\DirHelper;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
@@ -56,20 +56,20 @@ final class CacheTest extends TestCase
     public function testKeyNotExists(): void
     {
         $cache = new Cache($this->resourcesDir);
-        $cacheKey = new CacheKey(uniqid());
-        $this->assertFalse($cache->exists($cacheKey));
+        $key = new Key(uniqid());
+        $this->assertFalse($cache->exists($key));
     }
 
     public function testGetNotExists(): void
     {
-        $cacheKey = new CacheKey(uniqid());
+        $key = new Key(uniqid());
         $this->expectException(OutOfBoundsException::class);
-        (new Cache($this->resourcesDir))->get($cacheKey);
+        (new Cache($this->resourcesDir))->get($key);
     }
 
     public function testWithPutWithRemove(): void
     {
-        $key = uniqid();
+        $uniqid = uniqid();
         $var = [
             time(),
             false,
@@ -78,27 +78,27 @@ final class CacheTest extends TestCase
             13.13
         ];
         $varStorable = new VarStorable($var);
-        $cacheKey = new CacheKey($key);
+        $key = new Key($uniqid);
         $cache = new Cache($this->resourcesDir);
-        $cacheWithPut = $cache->withPut($cacheKey, $varStorable);
+        $cacheWithPut = $cache->withPut($key, $varStorable);
         $this->assertNotSame($cache, $cacheWithPut);
-        $this->assertArrayHasKey($key, $cacheWithPut->puts());
+        $this->assertArrayHasKey($uniqid, $cacheWithPut->puts());
         $this->assertArrayHasKey(
             'path',
-            $cacheWithPut->puts()[$key]
+            $cacheWithPut->puts()[$uniqid]
         );
         $this->assertArrayHasKey(
             'checksum',
-            $cacheWithPut->puts()[$key]
+            $cacheWithPut->puts()[$uniqid]
         );
-        $this->assertTrue($cacheWithPut->exists($cacheKey));
+        $this->assertTrue($cacheWithPut->exists($key));
         $this->assertInstanceOf(
-            CacheItemInterface::class,
-            $cacheWithPut->get($cacheKey)
+            ItemInterface::class,
+            $cacheWithPut->get($key)
         );
-        $cacheWithout = $cacheWithPut->without($cacheKey);
+        $cacheWithout = $cacheWithPut->without($key);
         $this->assertNotSame($cacheWithPut, $cacheWithout);
-        $this->assertArrayNotHasKey($key, $cacheWithout->puts());
-        $this->assertFalse($cacheWithout->exists($cacheKey));
+        $this->assertArrayNotHasKey($uniqid, $cacheWithout->puts());
+        $this->assertFalse($cacheWithout->exists($key));
     }
 }

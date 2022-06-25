@@ -19,7 +19,7 @@ use Chevere\Throwable\Exceptions\RuntimeException;
 /**
  * Describes the component that defines a cache item.
  */
-interface CacheItemInterface
+interface ItemInterface
 {
     public function __construct(FilePhpReturnInterface $phpFileReturn);
 
