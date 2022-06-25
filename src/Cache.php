@@ -31,7 +31,9 @@ use Throwable;
 final class Cache implements CacheInterface
 {
     /**
-     * @var array An array [key => [checksum => , path =>]] containing information about the cache items
+     * [key => [checksum => , path =>]]
+     *
+     * @var array<string, array<string, string>>
      */
     private array $puts;
 

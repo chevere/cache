@@ -84,6 +84,8 @@ interface CacheInterface
      *      ],
      * ];
      * ```
+     *
+     * @return array<string, array<string, string>>
      */
     public function puts(): array;
 }
