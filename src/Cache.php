@@ -16,7 +16,7 @@ namespace Chevere\Cache;
 use Chevere\Cache\Interfaces\CacheInterface;
 use Chevere\Cache\Interfaces\ItemInterface;
 use Chevere\Cache\Interfaces\KeyInterface;
-use Chevere\Filesystem\Exceptions\DirUnableToCreateException;
+use Chevere\Filesystem\Exceptions\DirectoryUnableToCreateException;
 use Chevere\Filesystem\File;
 use Chevere\Filesystem\FilePhp;
 use Chevere\Filesystem\FilePhpReturn;
@@ -38,7 +38,7 @@ final class Cache implements CacheInterface
     private array $puts;
 
     /**
-     * @throws DirUnableToCreateException
+     * @throws DirectoryUnableToCreateException
      */
     public function __construct(
         private DirectoryInterface $directory

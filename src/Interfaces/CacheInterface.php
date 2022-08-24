@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Chevere\Cache\Interfaces;
 
-use Chevere\Filesystem\Exceptions\DirUnableToCreateException;
+use Chevere\Filesystem\Exceptions\DirectoryUnableToCreateException;
 use Chevere\Filesystem\Exceptions\FileUnableToRemoveException;
 use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
@@ -30,7 +30,7 @@ interface CacheInterface
 
     /**
      * @param DirectoryInterface $directory Directory for working cache
-     * @throws DirUnableToCreateException if $dir doesn't exists and unable to create
+     * @throws DirectoryUnableToCreateException if $dir doesn't exists and unable to create
      */
     public function __construct(DirectoryInterface $directory);
 
