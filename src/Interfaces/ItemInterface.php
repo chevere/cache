@@ -35,5 +35,5 @@ interface ItemInterface
      *
      * @throws RuntimeException
      */
-    public function var(): mixed;
+    public function variable(): mixed;
 }

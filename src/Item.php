@@ -28,8 +28,8 @@ final class Item implements ItemInterface
         return $this->phpFileReturn->raw();
     }
 
-    public function var(): mixed
+    public function variable(): mixed
     {
-        return $this->phpFileReturn->var();
+        return $this->phpFileReturn->variable();
     }
 }

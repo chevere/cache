@@ -16,36 +16,36 @@ namespace Chevere\Tests;
 use Chevere\Cache\Cache;
 use Chevere\Cache\Interfaces\ItemInterface;
 use Chevere\Cache\Key;
-use Chevere\Filesystem\Interfaces\DirInterface;
-use Chevere\Tests\src\DirHelper;
+use Chevere\Filesystem\Interfaces\DirectoryInterface;
+use Chevere\Tests\src\DirectoryHelper;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
-use Chevere\VarSupport\VarStorable;
+use Chevere\VariableSupport\StorableVariable;
 use PHPUnit\Framework\TestCase;
 
 final class CacheTest extends TestCase
 {
-    private DirInterface $resourcesDir;
+    private DirectoryInterface $resourcesDirectory;
 
     protected function setUp(): void
     {
-        $this->resourcesDir = (new DirHelper($this))->dir();
-        $this->resourcesDir->createIfNotExists();
+        $this->resourcesDirectory = (new DirectoryHelper($this))->directory();
+        $this->resourcesDirectory->createIfNotExists();
     }
 
     public function tearDown(): void
     {
-        $this->resourcesDir->removeIfExists();
+        $this->resourcesDirectory->removeIfExists();
     }
 
     public function testConstruct(): void
     {
-        $cache = new Cache($this->resourcesDir);
-        $this->assertSame($cache->dir(), $this->resourcesDir);
+        $cache = new Cache($this->resourcesDirectory);
+        $this->assertSame($cache->directory(), $this->resourcesDirectory);
     }
 
     public function testConstructDirNotExists(): void
     {
-        $dir = $this->resourcesDir->getChild('delete/');
+        $dir = $this->resourcesDirectory->getChild('delete/');
         $dirPath = $dir->path()->__toString();
         $this->assertDirectoryDoesNotExist($dir->path()->__toString());
         new Cache($dir);
@@ -55,7 +55,7 @@ final class CacheTest extends TestCase
 
     public function testKeyNotExists(): void
     {
-        $cache = new Cache($this->resourcesDir);
+        $cache = new Cache($this->resourcesDirectory);
         $key = new Key(uniqid());
         $this->assertFalse($cache->exists($key));
     }
@@ -64,7 +64,7 @@ final class CacheTest extends TestCase
     {
         $key = new Key(uniqid());
         $this->expectException(OutOfBoundsException::class);
-        (new Cache($this->resourcesDir))->get($key);
+        (new Cache($this->resourcesDirectory))->get($key);
     }
 
     public function testWithPutWithRemove(): void
@@ -74,12 +74,12 @@ final class CacheTest extends TestCase
             time(),
             false,
             'test',
-            $this->resourcesDir->getChild('test/'),
+            $this->resourcesDirectory->getChild('test/'),
             13.13
         ];
-        $varStorable = new VarStorable($var);
+        $varStorable = new StorableVariable($var);
         $key = new Key($uniqid);
-        $cache = new Cache($this->resourcesDir);
+        $cache = new Cache($this->resourcesDirectory);
         $cacheWithPut = $cache->withPut($key, $varStorable);
         $this->assertNotSame($cache, $cacheWithPut);
         $this->assertArrayHasKey($uniqid, $cacheWithPut->puts());

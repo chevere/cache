@@ -15,9 +15,9 @@ namespace Chevere\Cache\Interfaces;
 
 use Chevere\Filesystem\Exceptions\DirUnableToCreateException;
 use Chevere\Filesystem\Exceptions\FileUnableToRemoveException;
-use Chevere\Filesystem\Interfaces\DirInterface;
+use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
-use Chevere\VarSupport\Interfaces\VarStorableInterface;
+use Chevere\VariableSupport\Interfaces\StorableVariableInterface;
 
 /**
  * Describes the component in charge of caching PHP variables.
@@ -29,15 +29,15 @@ interface CacheInterface
     public const ILLEGAL_KEY_CHARACTERS = '\.\/\\\~\:';
 
     /**
-     * @param DirInterface $dir Directory for working cache
+     * @param DirectoryInterface $directory Directory for working cache
      * @throws DirUnableToCreateException if $dir doesn't exists and unable to create
      */
-    public function __construct(DirInterface $dir);
+    public function __construct(DirectoryInterface $directory);
 
     /**
      * Provides access to the cache directory.
      */
-    public function dir(): DirInterface;
+    public function directory(): DirectoryInterface;
 
     /**
      * Put item in cache.
@@ -47,7 +47,7 @@ interface CacheInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified put.
      */
-    public function withPut(KeyInterface $key, VarStorableInterface $var): self;
+    public function withPut(KeyInterface $key, StorableVariableInterface $variable): self;
 
     /**
      * Remove item from cache.

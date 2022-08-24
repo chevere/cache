@@ -19,27 +19,27 @@ use Chevere\Filesystem\Exceptions\FileNotExistsException;
 use Chevere\Filesystem\File;
 use Chevere\Filesystem\FilePhp;
 use Chevere\Filesystem\FilePhpReturn;
-use Chevere\Filesystem\Interfaces\DirInterface;
+use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Filesystem\Interfaces\FileInterface;
 use Chevere\Filesystem\Interfaces\PathInterface;
-use Chevere\Tests\src\DirHelper;
-use Chevere\VarSupport\VarStorable;
+use Chevere\Tests\src\DirectoryHelper;
+use Chevere\VariableSupport\StorableVariable;
 use PHPUnit\Framework\TestCase;
 use function Safe\file_put_contents;
 
 final class ItemTest extends TestCase
 {
-    private DirInterface $dir;
+    private DirectoryInterface $directory;
 
     public function setUp(): void
     {
-        $this->dir = (new DirHelper($this))->dir();
-        $this->dir->createIfNotExists();
+        $this->directory = (new DirectoryHelper($this))->directory();
+        $this->directory->createIfNotExists();
     }
 
     public function tearDown(): void
     {
-        $this->dir->removeIfExists();
+        $this->directory->removeIfExists();
     }
 
     public function testVarThrowsException(): void
@@ -48,7 +48,7 @@ final class ItemTest extends TestCase
         $item = $this->getCacheItem($file->path());
         $file->remove();
         $this->expectException(FileNotExistsException::class);
-        $item->var();
+        $item->variable();
     }
 
     public function testRawThrowsException(): void
@@ -62,31 +62,31 @@ final class ItemTest extends TestCase
 
     public function testNotSerialized(): void
     {
-        $path = $this->dir->path()->getChild('return.php');
+        $path = $this->directory->path()->getChild('return.php');
         $this->getDisposablePhpFileReturn();
         $item = $this->getCacheItem($path);
         $var = include $path->__toString();
         $this->assertSame($var, $item->raw());
-        $this->assertSame($var, $item->var());
+        $this->assertSame($var, $item->variable());
     }
 
     public function testSerialized(): void
     {
-        $path = $this->dir->path()->getChild('return-serialized.php');
+        $path = $this->directory->path()->getChild('return-serialized.php');
         $this->writeSerialized($path);
         $item = $this->getCacheItem($path);
         $var = include $path->__toString();
         $this->assertSame($var, $item->raw());
         $this->assertEqualsCanonicalizing(
             unserialize($var),
-            $item->var()
+            $item->variable()
         );
         unlink($path->__toString());
     }
 
     private function getDisposablePhpFileReturn(): FileInterface
     {
-        $path = $this->dir->path()->getChild('return.php');
+        $path = $this->directory->path()->getChild('return.php');
         $file = new File($path);
         $file->create();
         $file->put("<?php return '';");
@@ -116,7 +116,7 @@ final class ItemTest extends TestCase
             )
         );
         $fileReturn->put(
-            new VarStorable($path)
+            new StorableVariable($path)
         );
     }
 }

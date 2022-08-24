@@ -13,26 +13,25 @@ declare(strict_types=1);
 
 namespace Chevere\Tests\src;
 
-use Chevere\Filesystem\Dir;
-use Chevere\Filesystem\Interfaces\DirInterface;
-use Chevere\Filesystem\Path;
+use function Chevere\Filesystem\directoryForPath;
+use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 
-final class DirHelper
+final class DirectoryHelper
 {
-    private DirInterface $dir;
+    private DirectoryInterface $directory;
 
     public function __construct(TestCase $object)
     {
         $reflection = new ReflectionObject($object);
         $dir = dirname($reflection->getFileName());
         $shortName = $reflection->getShortName();
-        $this->dir = new Dir(new Path("${dir}/_resources/${shortName}/"));
+        $this->directory = directoryForPath("${dir}/_resources/${shortName}/");
     }
 
-    public function dir(): DirInterface
+    public function directory(): DirectoryInterface
     {
-        return $this->dir;
+        return $this->directory;
     }
 }

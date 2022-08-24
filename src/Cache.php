@@ -20,12 +20,12 @@ use Chevere\Filesystem\Exceptions\DirUnableToCreateException;
 use Chevere\Filesystem\File;
 use Chevere\Filesystem\FilePhp;
 use Chevere\Filesystem\FilePhpReturn;
-use Chevere\Filesystem\Interfaces\DirInterface;
+use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Filesystem\Interfaces\PathInterface;
 use function Chevere\Message\message;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
 use Chevere\Throwable\Exceptions\RuntimeException;
-use Chevere\VarSupport\Interfaces\VarStorableInterface;
+use Chevere\VariableSupport\Interfaces\StorableVariableInterface;
 use Throwable;
 
 final class Cache implements CacheInterface
@@ -41,20 +41,20 @@ final class Cache implements CacheInterface
      * @throws DirUnableToCreateException
      */
     public function __construct(
-        private DirInterface $dir
+        private DirectoryInterface $directory
     ) {
-        if (!$this->dir->exists()) {
-            $this->dir->create();
+        if (!$this->directory->exists()) {
+            $this->directory->create();
         }
         $this->puts = [];
     }
 
-    public function dir(): DirInterface
+    public function directory(): DirectoryInterface
     {
-        return $this->dir;
+        return $this->directory;
     }
 
-    public function withPut(KeyInterface $key, VarStorableInterface $var): CacheInterface
+    public function withPut(KeyInterface $key, StorableVariableInterface $variable): CacheInterface
     {
         $path = $this->getPath($key->__toString());
 
@@ -65,7 +65,7 @@ final class Cache implements CacheInterface
             }
             $filePhp = new FilePhp($file);
             $fileReturn = new FilePhpReturn($filePhp);
-            $fileReturn->put($var);
+            $fileReturn->put($variable);
             // @infection-ignore-all
             try {
                 $filePhp->compileCache();
@@ -154,6 +154,6 @@ final class Cache implements CacheInterface
     {
         $child = $name . '.php';
 
-        return $this->dir->path()->getChild($child);
+        return $this->directory->path()->getChild($child);
     }
 }
