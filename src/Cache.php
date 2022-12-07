@@ -43,7 +43,7 @@ final class Cache implements CacheInterface
     public function __construct(
         private DirectoryInterface $directory
     ) {
-        if (!$this->directory->exists()) {
+        if (! $this->directory->exists()) {
             $this->directory->create();
         }
         $this->puts = [];
@@ -60,7 +60,7 @@ final class Cache implements CacheInterface
 
         try {
             $file = new File($path);
-            if (!$file->exists()) {
+            if (! $file->exists()) {
                 $file->create();
             }
             $filePhp = new FilePhp($file);
@@ -91,16 +91,13 @@ final class Cache implements CacheInterface
         return $new;
     }
 
-    /**
-     * @infection-ignore-all
-     */
-    public function without(KeyInterface $cacheKey): CacheInterface
+    public function withRemove(KeyInterface $cacheKey): CacheInterface
     {
         $new = clone $this;
         $path = $this->getPath($cacheKey->__toString());
 
         try {
-            if (!$path->exists()) {
+            if (! $path->exists()) {
                 // @codeCoverageIgnoreStart
                 return $new;
                 // @codeCoverageIgnoreEnd
@@ -129,7 +126,7 @@ final class Cache implements CacheInterface
     public function get(KeyInterface $cacheKey): ItemInterface
     {
         $path = $this->getPath($cacheKey->__toString());
-        if (!$path->exists()) {
+        if (! $path->exists()) {
             throw new OutOfBoundsException(
                 message('No cache for key %key%')
                     ->withCode('%key%', $cacheKey->__toString())

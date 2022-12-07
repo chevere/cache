@@ -52,14 +52,14 @@ interface CacheInterface
     /**
      * Remove item from cache.
      *
-     * Return an instance with the specified removed.
+     * Return an instance with the specified key removed.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified removed.
+     * an instance that contains the specified key removed.
      *
      * @throws FileUnableToRemoveException if unable to remove the cache file
      */
-    public function without(KeyInterface $key): self;
+    public function withRemove(KeyInterface $key): self;
 
     /**
      * Indicates whether the cache exists for the given key.

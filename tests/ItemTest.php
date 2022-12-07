@@ -31,13 +31,13 @@ final class ItemTest extends TestCase
 {
     private DirectoryInterface $directory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->directory = (new DirectoryHelper($this))->directory();
         $this->directory->createIfNotExists();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->directory->removeIfExists();
     }
@@ -107,7 +107,7 @@ final class ItemTest extends TestCase
 
     private function writeSerialized(PathInterface $path): void
     {
-        if (!$path->exists()) {
+        if (! $path->exists()) {
             file_put_contents($path->__toString(), '');
         }
         $fileReturn = new FilePhpReturn(

@@ -32,7 +32,7 @@ final class CacheTest extends TestCase
         $this->resourcesDirectory->createIfNotExists();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->resourcesDirectory->removeIfExists();
     }
@@ -75,12 +75,12 @@ final class CacheTest extends TestCase
             false,
             'test',
             $this->resourcesDirectory->getChild('test/'),
-            13.13
+            13.13,
         ];
-        $varStorable = new StorableVariable($var);
+        $storable = new StorableVariable($var);
         $key = new Key($uniqid);
         $cache = new Cache($this->resourcesDirectory);
-        $cacheWithPut = $cache->withPut($key, $varStorable);
+        $cacheWithPut = $cache->withPut($key, $storable);
         $this->assertNotSame($cache, $cacheWithPut);
         $this->assertArrayHasKey($uniqid, $cacheWithPut->puts());
         $this->assertArrayHasKey(
@@ -96,7 +96,7 @@ final class CacheTest extends TestCase
             ItemInterface::class,
             $cacheWithPut->get($key)
         );
-        $cacheWithout = $cacheWithPut->without($key);
+        $cacheWithout = $cacheWithPut->withRemove($key);
         $this->assertNotSame($cacheWithPut, $cacheWithout);
         $this->assertArrayNotHasKey($uniqid, $cacheWithout->puts());
         $this->assertFalse($cacheWithout->exists($key));
