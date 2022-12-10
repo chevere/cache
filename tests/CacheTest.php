@@ -15,7 +15,6 @@ namespace Chevere\Tests;
 
 use Chevere\Cache\Cache;
 use Chevere\Cache\Interfaces\ItemInterface;
-use Chevere\Cache\Key;
 use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Tests\src\DirectoryHelper;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
@@ -56,20 +55,20 @@ final class CacheTest extends TestCase
     public function testKeyNotExists(): void
     {
         $cache = new Cache($this->resourcesDirectory);
-        $key = new Key(uniqid());
+        $key = uniqid();
         $this->assertFalse($cache->exists($key));
     }
 
     public function testGetNotExists(): void
     {
-        $key = new Key(uniqid());
+        $key = uniqid();
         $this->expectException(OutOfBoundsException::class);
         (new Cache($this->resourcesDirectory))->get($key);
     }
 
     public function testWithPutWithRemove(): void
     {
-        $uniqid = uniqid();
+        $key = uniqid();
         $var = [
             time(),
             false,
@@ -78,18 +77,20 @@ final class CacheTest extends TestCase
             13.13,
         ];
         $storable = new StorableVariable($var);
-        $key = new Key($uniqid);
         $cache = new Cache($this->resourcesDirectory);
-        $cacheWithPut = $cache->withPut($key, $storable);
+        $cacheWithPut = $cache->withPut(...[
+            $key => $storable,
+        ]);
+        $this->assertEquals($var, $cacheWithPut->get($key)->variable());
         $this->assertNotSame($cache, $cacheWithPut);
-        $this->assertArrayHasKey($uniqid, $cacheWithPut->puts());
+        $this->assertArrayHasKey($key, $cacheWithPut->puts());
         $this->assertArrayHasKey(
             'path',
-            $cacheWithPut->puts()[$uniqid]
+            $cacheWithPut->puts()[$key]
         );
         $this->assertArrayHasKey(
             'checksum',
-            $cacheWithPut->puts()[$uniqid]
+            $cacheWithPut->puts()[$key]
         );
         $this->assertTrue($cacheWithPut->exists($key));
         $this->assertInstanceOf(
@@ -98,7 +99,7 @@ final class CacheTest extends TestCase
         );
         $cacheWithout = $cacheWithPut->withRemove($key);
         $this->assertNotSame($cacheWithPut, $cacheWithout);
-        $this->assertArrayNotHasKey($uniqid, $cacheWithout->puts());
+        $this->assertArrayNotHasKey($key, $cacheWithout->puts());
         $this->assertFalse($cacheWithout->exists($key));
     }
 }

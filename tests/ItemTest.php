@@ -60,16 +60,6 @@ final class ItemTest extends TestCase
         $item->raw();
     }
 
-    public function testNotSerialized(): void
-    {
-        $path = $this->directory->path()->getChild('return.php');
-        $this->getDisposablePhpFileReturn();
-        $item = $this->getCacheItem($path);
-        $var = include $path->__toString();
-        $this->assertSame($var, $item->raw());
-        $this->assertSame($var, $item->variable());
-    }
-
     public function testSerialized(): void
     {
         $path = $this->directory->path()->getChild('return-serialized.php');
@@ -89,7 +79,8 @@ final class ItemTest extends TestCase
         $path = $this->directory->path()->getChild('return.php');
         $file = new File($path);
         $file->create();
-        $file->put("<?php return '';");
+        $serialize = serialize('');
+        $file->put("<?php return '{$serialize}';");
 
         return $file;
     }

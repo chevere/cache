@@ -26,8 +26,6 @@ use Chevere\VariableSupport\Interfaces\StorableVariableInterface;
  */
 interface CacheInterface
 {
-    public const ILLEGAL_KEY_CHARACTERS = '\.\/\\\~\:';
-
     /**
      * @param DirectoryInterface $directory Directory for working cache
      * @throws DirectoryUnableToCreateException if $dir doesn't exists and unable to create
@@ -40,17 +38,17 @@ interface CacheInterface
     public function directory(): DirectoryInterface;
 
     /**
-     * Put item in cache.
+     * Put storable item(s) in cache.
      *
      * Return an instance with the specified put.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified put.
      */
-    public function withPut(KeyInterface $key, StorableVariableInterface $variable): self;
+    public function withPut(StorableVariableInterface ...$storable): self;
 
     /**
-     * Remove item from cache.
+     * Remove item(s) from cache.
      *
      * Return an instance with the specified key removed.
      *
@@ -59,19 +57,19 @@ interface CacheInterface
      *
      * @throws FileUnableToRemoveException if unable to remove the cache file
      */
-    public function withRemove(KeyInterface $key): self;
+    public function withRemove(string ...$key): self;
 
     /**
-     * Indicates whether the cache exists for the given key.
+     * Indicates whether the cache exists for the given key(s).
      */
-    public function exists(KeyInterface $key): bool;
+    public function exists(string ...$key): bool;
 
     /**
      * Get a cache item.
      *
      * @throws OutOfBoundsException
      */
-    public function get(KeyInterface $key): ItemInterface;
+    public function get(string $key): ItemInterface;
 
     /**
      * Provides access to the array containing puts.
