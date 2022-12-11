@@ -20,7 +20,7 @@ use Chevere\Filesystem\File;
 use Chevere\Filesystem\FilePhp;
 use Chevere\Filesystem\FilePhpReturn;
 use Chevere\Filesystem\Interfaces\DirectoryInterface;
-use Chevere\Filesystem\Interfaces\PathInterface;
+use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
 use function Chevere\Message\message;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
 use Chevere\Throwable\Exceptions\RuntimeException;
@@ -58,16 +58,15 @@ final class Cache implements CacheInterface
         $new = clone $this;
         foreach ($storable as $key => $variable) {
             $key = strval(new Key(strval($key)));
-            $path = $this->getPath($key);
+            $filePhpReturn = $this->getFilePhpReturn($key);
+            $filePhp = $filePhpReturn->filePhp();
+            $file = $filePhp->file();
 
             try {
-                $file = new File($path);
                 if (! $file->exists()) {
                     $file->create();
                 }
-                $filePhp = new FilePhp($file);
-                $fileReturn = new FilePhpReturn($filePhp);
-                $fileReturn->put($variable);
+                $filePhpReturn->put($variable);
                 // @infection-ignore-all
                 try {
                     $filePhp->compileCache();
@@ -78,8 +77,8 @@ final class Cache implements CacheInterface
                 }
                 // @codeCoverageIgnoreEnd
                 $new->puts[$key] = [
-                    'path' => $fileReturn->filePhp()->file()->path()->__toString(),
-                    'checksum' => $fileReturn->filePhp()->file()->getChecksum(),
+                    'path' => $file->path()->__toString(),
+                    'checksum' => $file->getChecksum(),
                 ];
             }
             // @codeCoverageIgnoreStart
@@ -98,18 +97,19 @@ final class Cache implements CacheInterface
         $new = clone $this;
         foreach ($key as $item) {
             $itemKey = strval(new Key($item));
-            $path = $this->getPath($itemKey);
+            $filePhpReturn = $this->getFilePhpReturn($itemKey);
+            $filePhp = $filePhpReturn->filePhp();
+            $file = $filePhp->file();
 
             try {
-                if (! $path->exists()) {
+                if (! $file->exists()) {
                     // @codeCoverageIgnoreStart
                     return $new;
                     // @codeCoverageIgnoreEnd
                 }
-                $filePhp = new FilePhp(new File($path));
                 // @infection-ignore-all
                 $filePhp->flushCache();
-                $filePhp->file()->remove();
+                $file->remove();
             }
             // @codeCoverageIgnoreStart
             // @infection-ignore-all
@@ -126,8 +126,9 @@ final class Cache implements CacheInterface
     public function exists(string ...$key): bool
     {
         foreach ($key as $item) {
-            $exists = $this->getPath(strval(new Key($item)))->exists();
-            if (! $exists) {
+            $filePhpReturn = $this->getFilePhpReturn(strval(new Key($item)));
+            $file = $filePhpReturn->filePhp()->file();
+            if (! $file->exists()) {
                 return false;
             }
         }
@@ -137,21 +138,16 @@ final class Cache implements CacheInterface
 
     public function get(string $key): ItemInterface
     {
-        $path = $this->getPath($key);
-        if (! $path->exists()) {
+        $filePhpReturn = $this->getFilePhpReturn($key);
+        $file = $filePhpReturn->filePhp()->file();
+        if (! $file->exists()) {
             throw new OutOfBoundsException(
                 message('No cache for key %key%')
                     ->withCode('%key%', $key)
             );
         }
 
-        return new Item(
-            new FilePhpReturn(
-                new FilePhp(
-                    new File($path)
-                )
-            )
-        );
+        return new Item($filePhpReturn);
     }
 
     public function puts(): array
@@ -159,10 +155,14 @@ final class Cache implements CacheInterface
         return $this->puts;
     }
 
-    private function getPath(string $name): PathInterface
+    private function getFilePhpReturn(string $name): FilePhpReturnInterface
     {
-        $child = $name . '.php';
-
-        return $this->directory->path()->getChild($child);
+        return new FilePhpReturn(
+            new FilePhp(
+                new File(
+                    $this->directory->path()->getChild("{$name}.php")
+                )
+            )
+        );
     }
 }
