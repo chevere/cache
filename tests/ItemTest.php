@@ -23,9 +23,11 @@ use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Filesystem\Interfaces\FileInterface;
 use Chevere\Filesystem\Interfaces\PathInterface;
 use Chevere\Tests\src\DirectoryHelper;
+use Chevere\Type\Interfaces\TypeInterface;
 use Chevere\VariableSupport\StorableVariable;
 use PHPUnit\Framework\TestCase;
-use function Safe\file_put_contents;
+use stdClass;
+use TypeError;
 
 final class ItemTest extends TestCase
 {
@@ -42,45 +44,53 @@ final class ItemTest extends TestCase
         $this->directory->removeIfExists();
     }
 
-    public function testVarThrowsException(): void
+    public function testGetNotExists(): void
     {
-        $file = $this->getDisposablePhpFileReturn();
+        $file = $this->getDisposablePhpFileReturn('test');
         $item = $this->getCacheItem($file->path());
         $file->remove();
         $this->expectException(FileNotExistsException::class);
-        $item->variable();
+        $item->get();
     }
 
-    public function testRawThrowsException(): void
+    /**
+     * @dataProvider getProvider
+     */
+    public function testGetType(mixed $value, string $expected, string $fail): void
     {
-        $file = $this->getDisposablePhpFileReturn();
+        $file = $this->getDisposablePhpFileReturn($value);
         $item = $this->getCacheItem($file->path());
-        $file->remove();
-        $this->expectException(FileNotExistsException::class);
-        $item->raw();
+        $getMethod = 'get' . ucfirst($expected);
+        $assertMethod = 'assert';
+        $assertMethod .= $expected === TypeInterface::OBJECT
+            ? 'Equals'
+            : 'Same';
+        $this->{$assertMethod}($value, $item->{$getMethod}());
+        $failMethod = 'get' . ucfirst($fail);
+        $this->expectException(TypeError::class);
+        $item->{$failMethod}();
     }
 
-    public function testSerialized(): void
+    public function getProvider(): array
     {
-        $path = $this->directory->path()->getChild('return-serialized.php');
-        $this->writeSerialized($path);
-        $item = $this->getCacheItem($path);
-        $var = include $path->__toString();
-        $this->assertSame($var, $item->raw());
-        $this->assertEqualsCanonicalizing(
-            unserialize($var),
-            $item->variable()
-        );
-        unlink($path->__toString());
+        return [
+            [['test'], TypeInterface::ARRAY, TypeInterface::BOOLEAN],
+            [true, TypeInterface::BOOLEAN, TypeInterface::INTEGER],
+            [1.1, TypeInterface::FLOAT, TypeInterface::STRING],
+            [1, TypeInterface::INTEGER, TypeInterface::ARRAY],
+            ['test', TypeInterface::STRING, TypeInterface::FLOAT],
+            [new stdClass(), TypeInterface::OBJECT, TypeInterface::ARRAY],
+        ];
     }
 
-    private function getDisposablePhpFileReturn(): FileInterface
+    private function getDisposablePhpFileReturn(mixed $variable): FileInterface
     {
         $path = $this->directory->path()->getChild('return.php');
         $file = new File($path);
+        $filePhp = new FilePhp($file);
+        $filePhpReturn = new FilePhpReturn($filePhp);
         $file->create();
-        $serialize = serialize('');
-        $file->put("<?php return '{$serialize}';");
+        $filePhpReturn->put(new StorableVariable($variable));
 
         return $file;
     }
@@ -93,21 +103,6 @@ final class ItemTest extends TestCase
                     new File($path)
                 )
             )
-        );
-    }
-
-    private function writeSerialized(PathInterface $path): void
-    {
-        if (! $path->exists()) {
-            file_put_contents($path->__toString(), '');
-        }
-        $fileReturn = new FilePhpReturn(
-            new FilePhp(
-                new File($path)
-            )
-        );
-        $fileReturn->put(
-            new StorableVariable($path)
         );
     }
 }

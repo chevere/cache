@@ -23,38 +23,38 @@ final class Item implements ItemInterface
     ) {
     }
 
-    public function raw(): mixed
+    public function get(): mixed
     {
-        return $this->filePhpReturn->raw();
+        return $this->filePhpReturn->get();
     }
 
-    public function variable(): mixed
+    public function getArray(): array
     {
-        return $this->filePhpReturn->variable();
+        return $this->filePhpReturn->getArray();
     }
 
-    public function variableArray(): array
+    public function getBoolean(): bool
     {
-        return $this->variable();
+        return $this->filePhpReturn->getBoolean();
     }
 
-    public function variableBoolean(): bool
+    public function getFloat(): float
     {
-        return $this->variable();
+        return $this->filePhpReturn->getFloat();
     }
 
-    public function variableFloat(): float
+    public function getInteger(): int
     {
-        return $this->variable();
+        return $this->filePhpReturn->getInteger();
     }
 
-    public function variableInteger(): int
+    public function getString(): string
     {
-        return $this->variable();
+        return $this->filePhpReturn->getString();
     }
 
-    public function variableString(): string
+    public function getObject(): object
     {
-        return $this->variable();
+        return $this->filePhpReturn->getObject();
     }
 }

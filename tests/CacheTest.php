@@ -82,7 +82,7 @@ final class CacheTest extends TestCase
         $cacheWithPut = $cache->withPut(...[
             $key => $storable,
         ]);
-        $this->assertEquals($var, $cacheWithPut->get($key)->variable());
+        $this->assertEquals($var, $cacheWithPut->get($key)->get());
         $this->assertNotSame($cache, $cacheWithPut);
         $this->assertArrayHasKey($key, $cacheWithPut->puts());
         $this->assertArrayHasKey(

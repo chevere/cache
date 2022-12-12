@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Chevere\Cache\Interfaces;
 
-use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
 use Chevere\Throwable\Exceptions\RuntimeException;
 
 /**
@@ -21,29 +20,25 @@ use Chevere\Throwable\Exceptions\RuntimeException;
  */
 interface ItemInterface
 {
-    public function __construct(FilePhpReturnInterface $filePhpReturn);
-
     /**
-     * Provides raw access to the cache value "as-is".
+     * Provides access to the cache PHP variable "as-is".
      *
      * @throws RuntimeException
      */
-    public function raw(): mixed;
+    public function get(): mixed;
 
     /**
-     * Provides access to the cache PHP variable.
-     *
-     * @throws RuntimeException
+     * @return array<mixed>
      */
-    public function variable(): mixed;
+    public function getArray(): array;
 
-    public function variableArray(): array;
+    public function getBoolean(): bool;
 
-    public function variableBoolean(): bool;
+    public function getFloat(): float;
 
-    public function variableFloat(): float;
+    public function getInteger(): int;
 
-    public function variableInteger(): int;
+    public function getString(): string;
 
-    public function variableString(): string;
+    public function getObject(): object;
 }
