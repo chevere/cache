@@ -19,17 +19,42 @@ use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
 final class Item implements ItemInterface
 {
     public function __construct(
-        private FilePhpReturnInterface $phpFileReturn
+        private FilePhpReturnInterface $filePhpReturn
     ) {
     }
 
     public function raw(): mixed
     {
-        return $this->phpFileReturn->raw();
+        return $this->filePhpReturn->raw();
     }
 
     public function variable(): mixed
     {
-        return $this->phpFileReturn->variable();
+        return $this->filePhpReturn->variable();
+    }
+
+    public function variableArray(): array
+    {
+        return $this->variable();
+    }
+
+    public function variableBoolean(): bool
+    {
+        return $this->variable();
+    }
+
+    public function variableFloat(): float
+    {
+        return $this->variable();
+    }
+
+    public function variableInteger(): int
+    {
+        return $this->variable();
+    }
+
+    public function variableString(): string
+    {
+        return $this->variable();
     }
 }

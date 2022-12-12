@@ -16,6 +16,7 @@ namespace Chevere\Tests;
 use Chevere\Cache\Cache;
 use Chevere\Cache\Interfaces\ItemInterface;
 use Chevere\Filesystem\Interfaces\DirectoryInterface;
+use function Chevere\String\randomString;
 use Chevere\Tests\src\DirectoryHelper;
 use Chevere\Throwable\Exceptions\OutOfBoundsException;
 use Chevere\VariableSupport\StorableVariable;
@@ -55,20 +56,20 @@ final class CacheTest extends TestCase
     public function testKeyNotExists(): void
     {
         $cache = new Cache($this->resourcesDirectory);
-        $key = uniqid();
+        $key = randomString(13);
         $this->assertFalse($cache->exists($key));
     }
 
     public function testGetNotExists(): void
     {
-        $key = uniqid();
+        $key = randomString(13);
         $this->expectException(OutOfBoundsException::class);
         (new Cache($this->resourcesDirectory))->get($key);
     }
 
     public function testWithPutWithRemove(): void
     {
-        $key = uniqid();
+        $key = randomString(13);
         $var = [
             time(),
             false,

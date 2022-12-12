@@ -25,9 +25,9 @@ final class DirectoryHelper
     public function __construct(TestCase $object)
     {
         $reflection = new ReflectionObject($object);
-        $dir = dirname($reflection->getFileName());
+        $dirName = dirname($reflection->getFileName());
         $shortName = $reflection->getShortName();
-        $this->directory = directoryForPath("${dir}/_resources/${shortName}/");
+        $this->directory = directoryForPath("${dirName}/_resources/${shortName}/");
     }
 
     public function directory(): DirectoryInterface

@@ -21,7 +21,7 @@ use Chevere\Throwable\Exceptions\RuntimeException;
  */
 interface ItemInterface
 {
-    public function __construct(FilePhpReturnInterface $phpFileReturn);
+    public function __construct(FilePhpReturnInterface $filePhpReturn);
 
     /**
      * Provides raw access to the cache value "as-is".
@@ -36,4 +36,14 @@ interface ItemInterface
      * @throws RuntimeException
      */
     public function variable(): mixed;
+
+    public function variableArray(): array;
+
+    public function variableBoolean(): bool;
+
+    public function variableFloat(): float;
+
+    public function variableInteger(): int;
+
+    public function variableString(): string;
 }
