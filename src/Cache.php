@@ -94,9 +94,7 @@ final class Cache implements CacheInterface
 
             try {
                 if (! $file->exists()) {
-                    // @codeCoverageIgnoreStart
-                    return $new;
-                    // @codeCoverageIgnoreEnd
+                    return $new; // @codeCoverageIgnore
                 }
                 // @infection-ignore-all
                 $filePhp->flushCache();
