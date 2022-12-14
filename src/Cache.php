@@ -62,30 +62,21 @@ final class Cache implements CacheInterface
             $filePhp = $filePhpReturn->filePhp();
             $file = $filePhp->file();
 
-            try {
-                if (! $file->exists()) {
-                    $file->create();
-                }
-                $filePhpReturn->put($variable);
-                // @infection-ignore-all
-                try {
-                    $filePhp->compileCache();
-                }
-                // @codeCoverageIgnoreStart
-                catch (Throwable) {
-                    // Don't panic if OPCache fails
-                }
-                // @codeCoverageIgnoreEnd
-                $new->puts[$key] = [
-                    'path' => $file->path()->__toString(),
-                    'checksum' => $file->getChecksum(),
-                ];
+            if (! $file->exists()) {
+                $file->create();
             }
-            // @codeCoverageIgnoreStart
+            $filePhpReturn->put($variable);
             // @infection-ignore-all
-            catch (Throwable $e) {
-                throw new RuntimeException(previous: $e);
+            try {
+                $filePhp->compileCache();
+            } catch (Throwable) { // @codeCoverageIgnoreStart
+                // Don't panic if OPCache fails
             }
+            // @codeCoverageIgnoreEnd
+            $new->puts[$key] = [
+                'path' => $file->path()->__toString(),
+                'checksum' => $file->getChecksum(),
+            ];
             // @codeCoverageIgnoreEnd
         }
 
@@ -110,10 +101,7 @@ final class Cache implements CacheInterface
                 // @infection-ignore-all
                 $filePhp->flushCache();
                 $file->remove();
-            }
-            // @codeCoverageIgnoreStart
-            // @infection-ignore-all
-            catch (Throwable $e) {
+            } catch (Throwable $e) { // @codeCoverageIgnoreStart
                 throw new RuntimeException(previous: $e);
             }
             // @codeCoverageIgnoreEnd
