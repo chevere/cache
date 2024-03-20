@@ -19,8 +19,6 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/chevere/cache/badge)](https://www.codefactor.io/repository/github/chevere/cache)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b956754f8ff04aaa9ca24a6e4cc21661)](https://www.codacy.com/gh/chevere/cache/dashboard)
 
-![Cache](.github/banner/cache-logo.svg)
-
 ## Documentation
 
 Documentation is available at [chevere.org](https://chevere.org/packages/cache).
