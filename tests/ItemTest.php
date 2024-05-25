@@ -23,8 +23,7 @@ use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Filesystem\Interfaces\FileInterface;
 use Chevere\Filesystem\Interfaces\PathInterface;
 use Chevere\Tests\src\DirectoryHelper;
-use Chevere\Type\Interfaces\TypeInterface;
-use Chevere\VariableSupport\StorableVariable;
+use Chevere\VarSupport\StorableVariable;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use TypeError;
@@ -60,26 +59,24 @@ final class ItemTest extends TestCase
     {
         $file = $this->getDisposablePhpFileReturn($value);
         $item = $this->getCacheItem($file->path());
-        $getMethod = 'get' . ucfirst($expected);
         $assertMethod = 'assert';
-        $assertMethod .= $expected === TypeInterface::OBJECT
+        $assertMethod .= $expected === 'object'
             ? 'Equals'
             : 'Same';
-        $this->{$assertMethod}($value, $item->{$getMethod}());
-        $failMethod = 'get' . ucfirst($fail);
+        $this->{$assertMethod}($value, $item->cast()->{$expected}());
         $this->expectException(TypeError::class);
-        $item->{$failMethod}();
+        $item->cast()->{$fail}();
     }
 
     public function getProvider(): array
     {
         return [
-            [['test'], TypeInterface::ARRAY, TypeInterface::BOOLEAN],
-            [true, TypeInterface::BOOLEAN, TypeInterface::INTEGER],
-            [1.1, TypeInterface::FLOAT, TypeInterface::STRING],
-            [1, TypeInterface::INTEGER, TypeInterface::ARRAY],
-            ['test', TypeInterface::STRING, TypeInterface::FLOAT],
-            [new stdClass(), TypeInterface::OBJECT, TypeInterface::ARRAY],
+            [['test'], 'array', 'bool'],
+            [true, 'bool', 'int'],
+            [1.1, 'float', 'string'],
+            [1, 'int', 'array'],
+            ['test', 'string', 'float'],
+            [new stdClass(), 'object', 'array'],
         ];
     }
 

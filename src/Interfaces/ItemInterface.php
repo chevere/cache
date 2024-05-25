@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Chevere\Cache\Interfaces;
 
-use Chevere\Throwable\Exceptions\RuntimeException;
+use Chevere\Parameter\Interfaces\CastInterface;
+use RuntimeException;
 
 /**
  * Describes the component that defines a cache item.
@@ -27,18 +28,5 @@ interface ItemInterface
      */
     public function get(): mixed;
 
-    /**
-     * @return array<mixed>
-     */
-    public function getArray(): array;
-
-    public function getBoolean(): bool;
-
-    public function getFloat(): float;
-
-    public function getInteger(): int;
-
-    public function getString(): string;
-
-    public function getObject(): object;
+    public function cast(): CastInterface;
 }

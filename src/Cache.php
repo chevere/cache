@@ -21,11 +21,11 @@ use Chevere\Filesystem\FilePhp;
 use Chevere\Filesystem\FilePhpReturn;
 use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
-use function Chevere\Message\message;
-use Chevere\Throwable\Exceptions\OutOfBoundsException;
-use Chevere\Throwable\Exceptions\RuntimeException;
-use Chevere\VariableSupport\Interfaces\StorableVariableInterface;
+use Chevere\VarSupport\Interfaces\StorableVariableInterface;
+use OutOfBoundsException;
+use RuntimeException;
 use Throwable;
+use function Chevere\Message\message;
 
 final class Cache implements CacheInterface
 {
@@ -128,8 +128,10 @@ final class Cache implements CacheInterface
         $file = $filePhpReturn->filePhp()->file();
         if (! $file->exists()) {
             throw new OutOfBoundsException(
-                message('No cache for key %key%')
-                    ->withCode('%key%', $key)
+                (string) message(
+                    'No cache for key `%key%`',
+                    key: $key
+                )
             );
         }
 

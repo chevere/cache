@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Chevere\Cache;
 
 use Chevere\Cache\Interfaces\KeyInterface;
+use InvalidArgumentException;
 use function Chevere\Message\message;
-use Chevere\Throwable\Exceptions\InvalidArgumentException;
 
 final class Key implements KeyInterface
 {
@@ -37,8 +37,10 @@ final class Key implements KeyInterface
             $forbidden = implode(' ', array_unique($matches[0]));
 
             throw new InvalidArgumentException(
-                message('Use of forbidden characters %character%')
-                    ->withCode('%character%', $forbidden)
+                (string) message(
+                    'Use of forbidden characters `%character%`',
+                    character: $forbidden
+                )
             );
         }
     }

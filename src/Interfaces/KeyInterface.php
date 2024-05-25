@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Chevere\Cache\Interfaces;
 
-use Chevere\Throwable\Exceptions\InvalidArgumentException;
 use Stringable;
 
 /**
@@ -22,11 +21,6 @@ use Stringable;
 interface KeyInterface extends Stringable
 {
     public const ILLEGAL_KEY_CHARACTERS = '\.\/\\\~\:';
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function __construct(string $key);
 
     /**
      * Provides access to `$key`.

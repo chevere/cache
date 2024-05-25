@@ -16,8 +16,8 @@ namespace Chevere\Cache\Interfaces;
 use Chevere\Filesystem\Exceptions\DirectoryUnableToCreateException;
 use Chevere\Filesystem\Exceptions\FileUnableToRemoveException;
 use Chevere\Filesystem\Interfaces\DirectoryInterface;
-use Chevere\Throwable\Exceptions\OutOfBoundsException;
-use Chevere\VariableSupport\Interfaces\StorableVariableInterface;
+use Chevere\VarSupport\Interfaces\StorableVariableInterface;
+use OutOfBoundsException;
 
 /**
  * Describes the component in charge of caching PHP variables.

@@ -15,6 +15,7 @@ namespace Chevere\Cache;
 
 use Chevere\Cache\Interfaces\ItemInterface;
 use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
+use Chevere\Parameter\Interfaces\CastInterface;
 
 final class Item implements ItemInterface
 {
@@ -28,33 +29,8 @@ final class Item implements ItemInterface
         return $this->filePhpReturn->get();
     }
 
-    public function getArray(): array
+    public function cast(): CastInterface
     {
-        return $this->filePhpReturn->getArray();
-    }
-
-    public function getBoolean(): bool
-    {
-        return $this->filePhpReturn->getBoolean();
-    }
-
-    public function getFloat(): float
-    {
-        return $this->filePhpReturn->getFloat();
-    }
-
-    public function getInteger(): int
-    {
-        return $this->filePhpReturn->getInteger();
-    }
-
-    public function getString(): string
-    {
-        return $this->filePhpReturn->getString();
-    }
-
-    public function getObject(): object
-    {
-        return $this->filePhpReturn->getObject();
+        return $this->filePhpReturn->cast();
     }
 }
