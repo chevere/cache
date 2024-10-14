@@ -1,7 +1,5 @@
 # Cache
 
-> 🔔 Subscribe to the [newsletter](https://chv.to/chevere-newsletter) to don't miss any update regarding Chevere.
-
 ![Chevere](chevere.svg)
 
 [![Build](https://img.shields.io/github/actions/workflow/status/chevere/cache/test.yml?branch=0.5&style=flat-square)](https://github.com/chevere/cache/actions)
